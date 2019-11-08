@@ -50,7 +50,7 @@ public class UsuarioServiceImp implements UsuarioService{
 		}
 	}
 	
-	public Either<Error, String> validarAutenticacionUsuario(UsuarioDTO usuarioDTO) {
+	public Either<Error, UsuarioDTO> validarAutenticacionUsuario(UsuarioDTO usuarioDTO) {
 		try {
 			Optional<Usuario> usuario = usuarioRepository.findById(usuarioDTO.getIdUsuario());
 
@@ -60,11 +60,9 @@ public class UsuarioServiceImp implements UsuarioService{
 				
 				String encodedString = Base64.getEncoder().encodeToString(usuarioDTO.getPassword().getBytes());
 				if(encodedString.equals(usuario.get().getPassword())) {
-					return Either.right("{\r\n" + 
-							"  \"idUsuario\": \"usuario1\",\r\n" + 
-							"  \"password\": \"usuario1\"\r\n" + 
-							"}");
-//					return Either.right("ok");
+					
+					usuarioDTO.setPassword(usuario.get().getPassword());
+					return Either.right(usuarioDTO);
 				}else {
 					throw new AutenticacionFallidaException();
 				}
