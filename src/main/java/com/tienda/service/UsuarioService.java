@@ -14,5 +14,5 @@ public interface UsuarioService {
 
 	public Either<Error, List<UsuarioDTO>> listarUsuario();
 	
-	public Either<Error, String> validarAutenticacionUsuario(UsuarioDTO usuarioDTO);
+	public Either<Error, UsuarioDTO> validarAutenticacionUsuario(UsuarioDTO usuarioDTO);
 }

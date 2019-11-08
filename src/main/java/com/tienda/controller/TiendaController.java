@@ -50,7 +50,7 @@ public class TiendaController {
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> validarLogin(@RequestBody UsuarioDTO usuarioDTO) {
 
-		Either<Error, String> resultEither = usuarioService.validarAutenticacionUsuario(usuarioDTO);
+		Either<Error, UsuarioDTO> resultEither = usuarioService.validarAutenticacionUsuario(usuarioDTO);
 
 		if (resultEither.isRight()) {
 			return new ResponseEntity<>(resultEither.right().value(), HttpStatus.OK);
