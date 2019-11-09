@@ -2,16 +2,16 @@ package com.tienda.imp;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tienda.adapter.LibroAdapter;
-import com.tienda.datatransfer.Error;
 import com.tienda.datatransfer.LibroDTO;
 import com.tienda.domain.Libro;
 import com.tienda.exception.LibroNoEncontradoException;
 import com.tienda.repository.LibroRepository;
-import com.tienda.service.ErrorService;
 import com.tienda.service.LibroService;
 
 import fj.data.Either;
@@ -19,16 +19,14 @@ import fj.data.Either;
 @Service
 public class LibroServiceImp implements LibroService{
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(LibroServiceImp.class);
 	@Autowired
 	private LibroRepository libroRepository;
 
 	@Autowired
-	private ErrorService errorService;
-
-	@Autowired
 	private LibroAdapter libroAdapter;
 
-	public Either<Error, List<LibroDTO>> listarLibros() {
+	public Either<Exception, List<LibroDTO>> listarLibros() {
 		try {
 			List<Libro> listLibro = (List<Libro>) libroRepository.findAll();
 			
@@ -41,9 +39,14 @@ public class LibroServiceImp implements LibroService{
 				
 			}
 
-		} catch (Exception e) {
+		}catch (LibroNoEncontradoException e) {
 
-			return Either.left(errorService.getError(e));
+			LOGGER.error("UsuarioServiceImp:validarAutenticacionUsuario",e);
+			return Either.left(e);
+		} 
+		catch (Exception e) {
+
+			return Either.left(e);
 		}
 	}
 }

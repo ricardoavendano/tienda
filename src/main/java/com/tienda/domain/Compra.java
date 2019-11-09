@@ -42,17 +42,6 @@ public class Compra implements Serializable {
 	public Compra() {
 	}
 
-	public Compra(Long idCompra) {
-		this.idCompra = idCompra;
-	}
-
-	public Compra(Long idCompra, Long valorCompra, String estado, Long cantidadComprada) {
-		this.idCompra = idCompra;
-		this.valorCompra = valorCompra;
-		this.estado = estado;
-		this.cantidadComprada = cantidadComprada;
-	}
-
 	public Long getIdCompra() {
 		return idCompra;
 	}

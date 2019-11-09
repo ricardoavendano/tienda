@@ -29,15 +29,6 @@ public class Usuario implements Serializable {
     public Usuario() {
     }
 
-    public Usuario(String idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public Usuario(String idUsuario, String password) {
-        this.idUsuario = idUsuario;
-        this.password = password;
-    }
-    
     public String getIdUsuario() {
 		return idUsuario;
 	}

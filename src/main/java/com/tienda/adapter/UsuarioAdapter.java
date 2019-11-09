@@ -25,17 +25,4 @@ public class UsuarioAdapter {
 		return usuarioListDTO;
 	}
 
-	public List<UsuarioDTO> compraPorUsuarioAdapter(List<Usuario> usuario) {
-
-		List<UsuarioDTO> usuarioListDTO = new ArrayList<>();
-		for (Usuario usuarioList : usuario) {
-
-			UsuarioDTO usuarioDTO = new UsuarioDTO();
-			usuarioDTO.setIdUsuario(usuarioList.getIdUsuario());
-			usuarioDTO.setPassword(usuarioList.getPassword());
-			usuarioListDTO.add(usuarioDTO);
-		}
-
-		return usuarioListDTO;
-	}
 }
