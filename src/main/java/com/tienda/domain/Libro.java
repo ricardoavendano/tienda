@@ -41,18 +41,6 @@ public class Libro implements Serializable {
 	
 	public Libro() {
     }
-
-    public Libro(Long idLibro) {
-        this.idLibro = idLibro;
-    }
-
-    public Libro(Long idLibro, String titulo, int cantidad, int precio, String imagen) {
-        this.idLibro = idLibro;
-        this.titulo = titulo;
-        this.cantidad = cantidad;
-        this.precio = precio;
-        this.imagen = imagen;
-    }
 	
 	public Long getIdLibro() {
 		return idLibro;

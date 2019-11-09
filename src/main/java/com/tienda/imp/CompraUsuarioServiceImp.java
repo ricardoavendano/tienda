@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tienda.adapter.CompraUsuarioAdapter;
 import com.tienda.datatransfer.CompraUsuarioDTO;
-import com.tienda.datatransfer.Error;
 import com.tienda.domain.Compra;
 import com.tienda.domain.Libro;
 import com.tienda.enums.EstadoCompra;
@@ -20,13 +21,13 @@ import com.tienda.exception.NoExistenComprasPendientesException;
 import com.tienda.repository.CompraRepository;
 import com.tienda.repository.LibroRepository;
 import com.tienda.service.CompraUsuarioService;
-import com.tienda.service.ErrorService;
 
 import fj.data.Either;
 
 @Service
 public class CompraUsuarioServiceImp implements CompraUsuarioService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompraUsuarioServiceImp.class);
 	@Autowired
 	private CompraRepository compraRepository;
 	
@@ -34,13 +35,10 @@ public class CompraUsuarioServiceImp implements CompraUsuarioService {
 	private LibroRepository libroRepository;
 
 	@Autowired
-	private ErrorService errorService;
-
-	@Autowired
 	private CompraUsuarioAdapter compraUsuarioAdapter;
 
 	@Transactional
-	public Either<Error, List<CompraUsuarioDTO>> listarCompraPendiente() {
+	public Either<Exception, List<CompraUsuarioDTO>> listarCompraPendiente() {
 		try {
 			List<Compra> listCompra = (List<Compra>) compraRepository.findAll();
 
@@ -57,14 +55,17 @@ public class CompraUsuarioServiceImp implements CompraUsuarioService {
 				}
 			}
 
+		} catch (NoExistenComprasPendientesException e) {
+			LOGGER.error("CompraUsuarioServiceImp:listarCompraPendiente",e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 
 	@Transactional
-	public Either<Error, CompraUsuarioDTO> listarCompraPendienteUsuario(String idUsuario) {
+	public Either<Exception, CompraUsuarioDTO> listarCompraPendienteUsuario(String idUsuario) {
 		try {
 			List<Compra> listCompra = (List<Compra>) compraRepository.findAll();
 
@@ -85,14 +86,17 @@ public class CompraUsuarioServiceImp implements CompraUsuarioService {
 				}
 			}
 
+		} catch (NoExistenComprasPendientesException e) {
+			LOGGER.error("CompraUsuarioServiceImp:listarCompraPendienteUsuario",e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 
 	@Transactional
-	public Either<Error, List<CompraUsuarioDTO>> listarCompraFinalizada() {
+	public Either<Exception, List<CompraUsuarioDTO>> listarCompraFinalizada() {
 		try {
 			List<Compra> listCompra = (List<Compra>) compraRepository.findAll();
 
@@ -103,14 +107,17 @@ public class CompraUsuarioServiceImp implements CompraUsuarioService {
 				return Either.right(listCompraDTO);
 			}
 
+		} catch (NoExistenComprasFinalizadasException e) {
+			LOGGER.error("CompraUsuarioServiceImp:listarCompraFinalizada",e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 
 	@Transactional
-	public Either<Error, CompraUsuarioDTO> listarCompraFinalizadaUsuario(String idUsuario) {
+	public Either<Exception, CompraUsuarioDTO> listarCompraFinalizadaUsuario(String idUsuario) {
 		try {
 			List<Compra> listCompra = (List<Compra>) compraRepository.findAll();
 
@@ -131,14 +138,17 @@ public class CompraUsuarioServiceImp implements CompraUsuarioService {
 
 			}
 
+		} catch (NoExistenComprasFinalizadasException e) {
+			LOGGER.error("CompraUsuarioServiceImp:listarCompraFinalizadaUsuario",e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 
 	@Transactional
-	public Either<Error, String> guardarCompra(String idUsuario) {
+	public Either<Exception, String> guardarCompra(String idUsuario) {
 		try {
 			List<Compra> listCompra = (List<Compra>) compraRepository.findAll();
 
@@ -157,14 +167,17 @@ public class CompraUsuarioServiceImp implements CompraUsuarioService {
 				return Either.right("{\"code\":\"Compra finalizada\"}");
 			}
 
+		} catch (NoExistenComprasPendientesException e) {
+			LOGGER.error("CompraUsuarioServiceImp:guardarCompra",e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 
 	@Transactional
-	public Either<Error, String> cancelarCompra(String idUsuario, Long idCompra) {
+	public Either<Exception, String> cancelarCompra(String idUsuario, Long idCompra) {
 		try {
 			List<Compra> listCompra = (List<Compra>) compraRepository.findAll();
 
@@ -203,9 +216,12 @@ public class CompraUsuarioServiceImp implements CompraUsuarioService {
 				return Either.right("{\"code\":\"Compra calcelada\"}");
 			}
 
+		} catch (NoExistenComprasPendientesException e) {
+			LOGGER.error("CompraUsuarioServiceImp:cancelarCompra",e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 }

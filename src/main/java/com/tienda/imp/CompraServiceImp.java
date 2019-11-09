@@ -5,16 +5,16 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tienda.adapter.CompraAdapter;
 import com.tienda.datatransfer.CompraDTO;
-import com.tienda.datatransfer.Error;
 import com.tienda.domain.Compra;
 import com.tienda.domain.Libro;
 import com.tienda.domain.Usuario;
-import com.tienda.exception.AgregarCarritoException;
 import com.tienda.exception.CompraNoEncontradaException;
 import com.tienda.exception.EstadoCompraException;
 import com.tienda.exception.LibroAgotagoException;
@@ -23,12 +23,13 @@ import com.tienda.repository.CompraRepository;
 import com.tienda.repository.LibroRepository;
 import com.tienda.request.mapping.CompraRequestMapping;
 import com.tienda.service.CompraService;
-import com.tienda.service.ErrorService;
 
 import fj.data.Either;
 
 @Service
 public class CompraServiceImp implements CompraService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompraServiceImp.class);
 
 	@Autowired
 	private CompraRepository compraRepository;
@@ -37,13 +38,10 @@ public class CompraServiceImp implements CompraService {
 	private LibroRepository libroRepository;
 
 	@Autowired
-	private ErrorService errorService;
-
-	@Autowired
 	private CompraAdapter compraAdapter;
 
 	@Transactional
-	public Either<Error, List<CompraDTO>> listarCompra() {
+	public Either<Exception, List<CompraDTO>> listarCompra() {
 		try {
 			List<Compra> listCompra = (List<Compra>) compraRepository.findAll();
 
@@ -54,14 +52,17 @@ public class CompraServiceImp implements CompraService {
 				return Either.right(listCompraDTO);
 			}
 
+		} catch (CompraNoEncontradaException e) {
+			LOGGER.error("CompraServiceImp:listarCompra", e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 
 	@Transactional
-	public Either<Error, CompraDTO> listarEstadoCompra(Long id) {
+	public Either<Exception, CompraDTO> listarEstadoCompra(Long id) {
 		try {
 			Optional<Compra> listCompra = compraRepository.findById(id);
 
@@ -73,13 +74,16 @@ public class CompraServiceImp implements CompraService {
 				return Either.right(compraDTO);
 			}
 
+		} catch (EstadoCompraException e) {
+			LOGGER.error("CompraServiceImp:listarEstadoCompra", e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 
-	public Either<Error, String> guardarCompra(CompraRequestMapping compraRequestMapping) {
+	public Either<Exception, String> guardarCompra(CompraRequestMapping compraRequestMapping) {
 		try {
 
 			if (compraRequestMapping.getCantidadComprada() > 0) {
@@ -105,24 +109,23 @@ public class CompraServiceImp implements CompraService {
 					}
 					optionlLibro.get().setCantidad(cantidadDisponible);
 
-					try {
-						compraRepository.save(compra);
-						libroRepository.save(optionlLibro.get());
+					compraRepository.save(compra);
+					libroRepository.save(optionlLibro.get());
 
-					} catch (Exception e) {
-						throw new AgregarCarritoException();
-					}
 					return Either.right("{\"code\":\"Articulo añadido al carrito\"}");
 				} else {
 					return Either.right("{\"code\":\"No se encontro el libro\"}");
 				}
-			}else {
+			} else {
 				throw new ValorCompraInvalidoException();
 			}
 
+		} catch (ValorCompraInvalidoException | LibroAgotagoException e) {
+			LOGGER.error("CompraServiceImp:guardarCompra", e);
+			return Either.left(e);
 		} catch (Exception e) {
 
-			return Either.left(errorService.getError(e));
+			return Either.left(e);
 		}
 	}
 }

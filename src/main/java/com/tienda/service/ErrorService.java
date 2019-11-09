@@ -37,18 +37,13 @@ public class ErrorService {
 		}
 		if (e instanceof EstadoCompraException) {
 
-			return new Error("DetalleCompra001", "No hay compras registradas con el id: "+ ((EstadoCompraException) e).getId());
+			return new Error("EstadoCompraException001", "No hay compras registradas con el id: "+ ((EstadoCompraException) e).getId());
 
 		}
 		
 		if (e instanceof DetalleCompraNoEncontradoException) {
 
-			return new Error("DetalleCompra001", "No hay compras registradas ");
-
-		}
-		if (e instanceof EstadoCompraException) {
-
-			return new Error("EstadoCompra001", "No hay compras registradas");
+			return new Error("DetalleCompraNoEncontradoException001", "No hay compras registradas ");
 
 		}
 		if (e instanceof UsuarioNoEncontradoException) {

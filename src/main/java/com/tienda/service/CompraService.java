@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.tienda.datatransfer.CompraDTO;
-import com.tienda.datatransfer.Error;
 import com.tienda.request.mapping.CompraRequestMapping;
 
 import fj.data.Either;
@@ -13,9 +12,9 @@ import fj.data.Either;
 @Service
 public interface CompraService {
 
-	public Either<Error, List<CompraDTO>> listarCompra();
+	public Either<Exception, List<CompraDTO>> listarCompra();
 
-	public Either<Error, CompraDTO> listarEstadoCompra(Long id);
+	public Either<Exception, CompraDTO> listarEstadoCompra(Long id);
 	
-	public Either<Error, String> guardarCompra(CompraRequestMapping compraRequestMapping);
+	public Either<Exception, String> guardarCompra(CompraRequestMapping compraRequestMapping);
 }
