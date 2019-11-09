@@ -39,9 +39,6 @@ public class Compra implements Serializable {
 	@ManyToOne
 	private Usuario idUsuarioPK;
 
-	public Compra() {
-	}
-
 	public Long getIdCompra() {
 		return idCompra;
 	}

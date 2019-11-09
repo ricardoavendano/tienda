@@ -38,10 +38,7 @@ public class Libro implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idLibropk")
     private List<Compra> compraList;
-	
-	public Libro() {
-    }
-	
+
 	public Long getIdLibro() {
 		return idLibro;
 	}

@@ -26,8 +26,6 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "idUsuarioPK")
     private List<Compra> compraList;    
     
-    public Usuario() {
-    }
 
     public String getIdUsuario() {
 		return idUsuario;
