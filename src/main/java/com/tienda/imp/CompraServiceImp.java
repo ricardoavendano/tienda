@@ -18,6 +18,7 @@ import com.tienda.exception.AgregarCarritoException;
 import com.tienda.exception.CompraNoEncontradaException;
 import com.tienda.exception.EstadoCompraException;
 import com.tienda.exception.LibroAgotagoException;
+import com.tienda.exception.ValorCompraInvalidoException;
 import com.tienda.repository.CompraRepository;
 import com.tienda.repository.LibroRepository;
 import com.tienda.request.mapping.CompraRequestMapping;
@@ -81,38 +82,42 @@ public class CompraServiceImp implements CompraService {
 	public Either<Error, String> guardarCompra(CompraRequestMapping compraRequestMapping) {
 		try {
 
-			Compra compra = new Compra();
-			compra.setIdCompra(Long.valueOf(0));
-			compra.setCantidadComprada(compraRequestMapping.getCantidadComprada());
-			compra.setEstado(compraRequestMapping.getEstado());
-			compra.setValorCompra(compraRequestMapping.getValorCompra());
+			if (compraRequestMapping.getCantidadComprada() > 0) {
+				Compra compra = new Compra();
+				compra.setIdCompra(Long.valueOf(0));
+				compra.setCantidadComprada(compraRequestMapping.getCantidadComprada());
+				compra.setEstado(compraRequestMapping.getEstado());
+				compra.setValorCompra(compraRequestMapping.getValorCompra());
 
-			Usuario usuario = new Usuario();
-			usuario.setIdUsuario(compraRequestMapping.getIdUsuario());
-			compra.setIdUsuarioPK(usuario);
+				Usuario usuario = new Usuario();
+				usuario.setIdUsuario(compraRequestMapping.getIdUsuario());
+				compra.setIdUsuarioPK(usuario);
 
-			Optional<Libro> optionlLibro = libroRepository.findById(compraRequestMapping.getIdLibro());
+				Optional<Libro> optionlLibro = libroRepository.findById(compraRequestMapping.getIdLibro());
 
-			if (optionlLibro.isPresent()) {
-				compra.setIdLibropk(optionlLibro.get());
+				if (optionlLibro.isPresent()) {
+					compra.setIdLibropk(optionlLibro.get());
 
-				int cantidadDisponible = optionlLibro.get().getCantidad()
-						- Integer.valueOf(compraRequestMapping.getCantidadComprada().toString());
-				if(cantidadDisponible < 0) {
-					throw new LibroAgotagoException(optionlLibro.get().getCantidad());
+					int cantidadDisponible = optionlLibro.get().getCantidad()
+							- Integer.valueOf(compraRequestMapping.getCantidadComprada().toString());
+					if (cantidadDisponible < 0) {
+						throw new LibroAgotagoException(optionlLibro.get().getCantidad());
+					}
+					optionlLibro.get().setCantidad(cantidadDisponible);
+
+					try {
+						compraRepository.save(compra);
+						libroRepository.save(optionlLibro.get());
+
+					} catch (Exception e) {
+						throw new AgregarCarritoException();
+					}
+					return Either.right("{\"code\":\"Articulo añadido al carrito\"}");
+				} else {
+					return Either.right("{\"code\":\"No se encontro el libro\"}");
 				}
-				optionlLibro.get().setCantidad(cantidadDisponible);
-
-				try {
-					compraRepository.save(compra);
-					libroRepository.save(optionlLibro.get());
-
-				} catch (Exception e) {
-					throw new AgregarCarritoException();
-				}
-				return Either.right("Articulo añadido al carrito");
 			}else {
-				return Either.right("No se encontro el libro");
+				throw new ValorCompraInvalidoException();
 			}
 
 		} catch (Exception e) {

@@ -14,5 +14,15 @@ public interface CompraUsuarioService {
 
 	public  Either<Error, List<CompraUsuarioDTO>> listarCompraPendiente();
 	
+	public  Either<Error, CompraUsuarioDTO> listarCompraPendienteUsuario(String idUsuario);
+	
 	public  Either<Error, List<CompraUsuarioDTO>> listarCompraFinalizada();
+	
+	public  Either<Error, CompraUsuarioDTO> listarCompraFinalizadaUsuario(String idUsuario);
+	
+	public Either<Error, String> guardarCompra(String idUsuario);
+	
+	public Either<Error, String> cancelarCompra(String idUsuario, Long idCompra);
+	
+	
 }
