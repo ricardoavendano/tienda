@@ -18,6 +18,7 @@ import com.tienda.exception.NoExistenComprasFinalizadasException;
 import com.tienda.exception.NoExistenComprasPendientesException;
 import com.tienda.exception.UsuarioNoEncontradoException;
 import com.tienda.exception.UsuarioNoExisteException;
+import com.tienda.exception.ValorCompraInvalidoException;
 
 @Service
 public class ErrorService {
@@ -85,7 +86,11 @@ public class ErrorService {
 			return new Error("AutenticacionFallidaException001", "Autenticacion fallida, vuelva a intentarlo");
 
 		}
-		
+		if (e instanceof ValorCompraInvalidoException) {
+
+			return new Error("ValorCompraInvalidoException001", "La cantidad de articulos a comprar debe ser mayor a cero");
+
+		}		
 										
 		Map<String, String> params = new HashMap<>();
 		params.put("Exception", e.getClass() + "-" + e.getMessage());

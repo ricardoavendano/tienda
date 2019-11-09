@@ -2,6 +2,7 @@ package com.tienda.datatransfer;
 
 public class LibroDTO {
 	
+	private Long idCompra;
 	private Long idLibro;
 	private String titulo;
 	private int cantidad;
@@ -9,6 +10,14 @@ public class LibroDTO {
 	private int precioTotal;
 	private String imagen;
     
+	public Long getIdCompra() {
+		return idCompra;
+	}
+
+	public void setIdCompra(Long idCompra) {
+		this.idCompra = idCompra;
+	}
+
 	public int getCantidad() {
 		return cantidad;
 	}

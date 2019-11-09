@@ -107,10 +107,34 @@ public class TiendaController {
 		return new ResponseEntity<>(resultEither.left().value(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	@GetMapping(value = "/listar/compra-pendiente/usuario/{idUsuario}")
+	public ResponseEntity<?> getCompraPendientePorUsuario(@PathVariable String idUsuario) {
+
+		Either<Error, CompraUsuarioDTO> resultEither = compraUsuarioService.listarCompraPendienteUsuario(idUsuario);
+
+		if (resultEither.isRight()) {
+			return new ResponseEntity<>(resultEither.right().value(), HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(resultEither.left().value(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	@GetMapping(value = "/listar/compra-finalizada/usuario")
 	public ResponseEntity<?> getCompraCompletaPorUsuarioList() {
 
 		Either<Error, List<CompraUsuarioDTO>> resultEither = compraUsuarioService.listarCompraFinalizada();
+
+		if (resultEither.isRight()) {
+			return new ResponseEntity<>(resultEither.right().value(), HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(resultEither.left().value(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@GetMapping(value = "/listar/compra-finalizada/usuario/{idUsuario}")
+	public ResponseEntity<?> getCompraCompletaPorUsuario(@PathVariable String idUsuario) {
+
+		Either<Error, CompraUsuarioDTO> resultEither = compraUsuarioService.listarCompraFinalizadaUsuario(idUsuario);
 
 		if (resultEither.isRight()) {
 			return new ResponseEntity<>(resultEither.right().value(), HttpStatus.OK);
@@ -135,6 +159,30 @@ public class TiendaController {
 	public ResponseEntity<?> setCompraElemento(@RequestBody CompraRequestMapping compraRequestMapping) {
 
 		Either<Error, String> resultEither = compraService.guardarCompra(compraRequestMapping);
+
+		if (resultEither.isRight()) {
+			return new ResponseEntity<>(resultEither.right().value(), HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(resultEither.left().value(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@GetMapping(value = "/finalizar/compra/{idUsuario}")
+	public ResponseEntity<?> finalizarCompra(@PathVariable String idUsuario) {
+
+		Either<Error, String> resultEither = compraUsuarioService.guardarCompra(idUsuario);
+
+		if (resultEither.isRight()) {
+			return new ResponseEntity<>(resultEither.right().value(), HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(resultEither.left().value(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@GetMapping(value = "/cancelar/compra/{idUsuario}/{idCompra}")
+	public ResponseEntity<?> cancelarCompra(@PathVariable String idUsuario, @PathVariable Long idCompra) {
+
+		Either<Error, String> resultEither = compraUsuarioService.cancelarCompra(idUsuario, idCompra);
 
 		if (resultEither.isRight()) {
 			return new ResponseEntity<>(resultEither.right().value(), HttpStatus.OK);

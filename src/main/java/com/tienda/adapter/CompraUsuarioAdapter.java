@@ -61,7 +61,7 @@ public class CompraUsuarioAdapter {
 				
 				LibroDTO libroDTO = new LibroDTO();
 				if(compra.getIdUsuarioPK().getIdUsuario().equals(usuario.getIdUsuarioPK().getIdUsuario())) {
-					
+					libroDTO.setIdCompra(compra.getIdCompra());
 					libroDTO.setCantidad(Integer.valueOf(compra.getCantidadComprada().toString()));
 					libroDTO.setIdLibro(compra.getIdLibropk().getIdLibro());
 					libroDTO.setImagen(compra.getIdLibropk().getImagen());
